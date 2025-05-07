@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Financiero</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    
+</head>
+<!-- Coloca esto justo después de abrir el <body> -->
+    <button class="menu-toggle" id="menuToggle">
+        <span class="material-icons">menu</span>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+<body>
+    <!-- Pantalla de Carga -->
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Pantalla de Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="app-logo">
+                <span class="material-icons">account_balance_wallet</span>
+                <h1>Control Financiero</h1>
+            </div>
+            <p>Gestiona tus ingresos y gastos fácilmente</p>
+            <button id="googleLoginBtn" class="google-login-btn">
+                <img src="google.png" alt="Google">
+                <span>Iniciar sesión con Google</span>
+            </button>
+            <div class="login-footer">
+                <span class="material-icons">security</span>
+                <small>Tus datos están protegidos</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div class="app-container hidden" id="appContainer">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="user-profile">
+                <div class="avatar" id="userAvatar">L</div>
+                <div class="user-info">
+                    <h3 id="userName">Luis A. Rodríguez V.</h3>
+                    <p id="userEmail">ytpengui@gmail.com</p>
+                </div>
+            </div>
+            
+            <nav class="main-menu">
+                <div class="menu-section">
+                    <h4><span class="material-icons">dashboard</span> Resumen</h4>
+                    <ul>
+                        <li class="active" data-view="summary">
+                            <span class="material-icons">pie_chart</span>
+                            <span>Resumen</span>
+                        </li>
+                        <li data-view="transactions">
+                            <span class="material-icons">list_alt</span>
+                            <span>Transacciones</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4><span class="material-icons">settings</span> Configuración</h4>
+                    <ul>
+                        <li data-view="categories">
+                            <span class="material-icons">category</span>
+                            <a href="/complemento/categoria.js">Exportar datos</a>
+                            <span>Categorías</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">attach_money</span>
+                            <span>Moneda</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">import_export</span>
+                            <span>Exportar datos</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">support_agent</span>
+                            <span>Centro de contacto</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">star</span>
+                            <span>Calificar la aplicación</span>
+                        </li>
+                        <li>
+                            <span class="material-icons">settings</span>
+                            <span>Configuración</span>
+                        </li>
+                        <li class="premium-option">
+                            <span class="material-icons">workspace_premium</span>
+                            <span>Obtén Premium</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <button class="logout-btn" id="logoutBtn">
+                    <span class="material-icons">logout</span>
+                    <span>Cerrar sesión</span>
+                </button>
+            </nav>
+        </aside>
+        
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <!-- Vista de Resumen -->
+            <div class="view-container" id="summaryView">
+                <header class="main-header">
+                    <h1>Resumen Financiero</h1>
+                    <div class="month-selector">
+                        <button class="nav-btn" id="prevMonthBtn">
+                            <span class="material-icons">chevron_left</span>
+                        </button>
+                        <h2 id="currentMonth">Marzo 2024</h2>
+                        <button class="nav-btn" id="nextMonthBtn">
+                            <span class="material-icons">chevron_right</span>
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="summary-cards">
+                    <div class="card income-card">
+                        <div class="card-icon">
+                            <span class="material-icons">trending_up</span>
+                        </div>
+                        <h3>Ingresos</h3>
+                        <p class="amount" id="incomeAmount">$0.00</p>
+                    </div>
+                    
+                    <div class="card expenses-card">
+                        <div class="card-icon">
+                            <span class="material-icons">trending_down</span>
+                        </div>
+                        <h3>Gastos</h3>
+                        <p class="amount" id="expensesAmount">$0.00</p>
+                    </div>
+                    
+                    <div class="card balance-card">
+                        <div class="card-icon">
+                            <span class="material-icons">account_balance</span>
+                        </div>
+                        <h3>Balance</h3>
+                        <p class="amount" id="balanceAmount">$0.00</p>
+                    </div>
+                </div>
+                <div class="fab-container" id="fabContainer">
+                    <!-- Opción para agregar gasto -->
+                    <div class="fab-option expense" onclick="openTransactionModal('expense')">
+                      <span class="material-icons">remove</span>
+                      <span>Agregar Gasto</span>
+                    </div>
+                    
+                    <!-- Opción para agregar ingreso -->
+                    <div class="fab-option income" onclick="openTransactionModal('income')">
+                      <span class="material-icons">add</span>
+                      <span>Agregar Ingreso</span>
+                    </div>
+                    
+                    <!-- Botón principal -->
+                    <div class="fab-main" id="fabMain">
+                      <span class="material-icons">add</span>
+                    </div>
+                  </div>
+                
+                <div class="recent-transactions">
+                    <h3><span class="material-icons">history</span> Últimas transacciones</h3>
+                    <div id="recentTransactionsList" class="transactions-list">
+                        <!-- Transacciones se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vista de Transacciones -->
+            <div class="view-container hidden" id="transactionsView">
+                <header class="main-header">
+                    <h1>Transacciones</h1>
+                    <button class="btn-primary" id="addTransactionBtn">
+                        <span class="material-icons">add</span>
+                        Nueva Transacción
+                    </button>
+                </header>
+                
+                <div class="transactions-container">
+                    <div id="transactionsList" class="transactions-list">
+                        <!-- Lista de transacciones -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vista de Categorías -->
+            <div class="view-container hidden" id="categoriesView">
+                <header class="main-header">
+                    <h1>Categorías</h1>
+                </header>
+                
+                <div class="categories-container">
+                    <div id="categoriesList">
+                        <div class="category-section">
+                            <h3><span class="material-icons" style="color: var(--expense-color);">trending_down</span> GASTOS</h3>
+                            <div class="category-grid">
+                                <div class="category-item" style="--category-color: #FF7043;">
+                                    <span class="material-icons" style="color: #FF7043;">local_grocery_store</span>
+                                    <span>Supermercado</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #AB47BC;">
+                                    <span class="material-icons" style="color: #AB47BC;">checkroom</span>
+                                    <span>Ropa</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #66BB6A;">
+                                    <span class="material-icons" style="color: #66BB6A;">home</span>
+                                    <span>Casa</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #FFA726;">
+                                    <span class="material-icons" style="color: #FFA726;">sports_esports</span>
+                                    <span>Entretenimiento</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #42A5F5;">
+                                    <span class="material-icons" style="color: #42A5F5;">directions_car</span>
+                                    <span>Transporte</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #EC407A;">
+                                    <span class="material-icons" style="color: #EC407A;">card_giftcard</span>
+                                    <span>Regalos</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #26C6DA;">
+                                    <span class="material-icons" style="color: #26C6DA;">flight</span>
+                                    <span>Viaje</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #7E57C2;">
+                                    <span class="material-icons" style="color: #7E57C2;">school</span>
+                                    <span>Educación</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #FF7043;">
+                                    <span class="material-icons" style="color: #FF7043;">restaurant</span>
+                                    <span>Comida</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #78909C;">
+                                    <span class="material-icons" style="color: #78909C;">work</span>
+                                    <span>Trabajo</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h3><span class="material-icons" style="color: var(--income-color);">trending_up</span> INGRESOS</h3>
+                            <div class="category-grid">
+                                <div class="category-item" style="--category-color: #66BB6A;">
+                                    <span class="material-icons" style="color: #66BB6A;">payments</span>
+                                    <span>Salario</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #AB47BC;">
+                                    <span class="material-icons" style="color: #AB47BC;">redeem</span>
+                                    <span>Regalos</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #26C6DA;">
+                                    <span class="material-icons" style="color: #26C6DA;">business</span>
+                                    <span>Negocios</span>
+                                </div>
+                                <div class="category-item" style="--category-color: #42A5F5;">
+                                    <span class="material-icons" style="color: #42A5F5;">savings</span>
+                                    <span>Ahorros</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Modal para Nueva Transacción -->
+        <div class="modal hidden" id="transactionModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Nueva Transacción</h3>
+                    <button class="close-modal" id="closeModalBtn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="transactionType">Tipo</label>
+                        <select id="transactionType" required>
+                            <option value="income">Ingreso</option>
+                            <option value="expense">Gasto</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transactionAmount">Cantidad</label>
+                        <input type="number" id="transactionAmount" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transactionCategory">Categoría</label>
+                        <select id="transactionCategory" required>
+                            <!-- Categorías de Gastos -->
+                            <optgroup label="Gastos">
+                                <option value="supermercado">Supermercado</option>
+                                <option value="ropa">Ropa</option>
+                                <option value="casa">Casa</option>
+                                <option value="entretenimiento">Entretenimiento</option>
+                                <option value="transporte">Transporte</option>
+                                <option value="regalos">Regalos</option>
+                                <option value="viaje">Viaje</option>
+                                <option value="educacion">Educación</option>
+                                <option value="comida">Comida</option>
+                                <option value="trabajo">Trabajo</option>
+                            </optgroup>
+                            <!-- Categorías de Ingresos -->
+                            <optgroup label="Ingresos">
+                                <option value="salario">Salario</option>
+                                <option value="regalos_ingreso">Regalos</option>
+                                <option value="negocios">Negocios</option>
+                                <option value="ahorros">Ahorros</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transactionDate">Fecha</label>
+                        <input type="date" id="transactionDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transactionNotes">Notas</label>
+                        <textarea id="transactionNotes" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <span class="material-icons">save</span>
+                        Guardar Transacción
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Aplicación JavaScript -->
+    <script src="script.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
